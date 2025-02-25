@@ -2,11 +2,12 @@
 import Link from "next/link";
 import styles from "./pacientes.module.css"
 import Image from "next/image";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function medicos() {
 
-    const [medico, setmedico] = useState([])
+    const [paciente, setPaciente] = useState([]);
+    const [busca, setBusca] = useState('');
 
     const getUfs = async () => {
         const response = await fetch('https://api-clinica-2a.onrender.com/pacientes')
@@ -14,13 +15,15 @@ export default function medicos() {
             throw new Error('erro ao buscar:' + response.statusText);
         }
         const data = await response.json();
-        setmedico(data)
+        setPaciente(data)
     }
     useEffect(() => {
         getUfs()
     }, [])
 
-    const [busca, setBusca] = useState('')
+    const pacientesFiltrados = paciente.filter(pacientes =>
+        pacientes.nome.toLowerCase().includes(busca.toLocaleLowerCase())
+    )
     
 
     return(
@@ -50,7 +53,7 @@ export default function medicos() {
                 </thead>
 
                 <tbody className={styles.tabela3}>
-                    {medico.map(medicos =>(
+                    {pacientesFiltrados.map(medicos =>(
                         <tr key={medicos.id}>
                             <td className={styles.nome}>{medicos.id}</td>
                             <td className={styles.nome}>{medicos.nome}</td>
